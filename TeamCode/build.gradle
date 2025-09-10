@@ -19,10 +19,34 @@ android {
     namespace = 'org.firstinspires.ftc.teamcode'
 
     packagingOptions {
-        jniLibs.useLegacyPackaging true
+        jniLibs {
+            pickFirsts += ['**/*.so']
+        }
+        jniLibs.useLegacyPackaging = true
     }
+}
+
+repositories {
+    // SolversLib
+    maven { url = "https://repo.dairy.foundation/releases" }
+    maven { url = "https://repo.dairy.foundation/snapshots" }
+
+    // PedroPathing
+    maven { url = 'https://maven.pedropathing.com' }
+    maven { url = "https://mymaven.bylazar.com/releases" }
 }
 
 dependencies {
     implementation project(':FtcRobotController')
+
+    // SolversLib
+    implementation "org.solverslib:core:SNAPSHOT-7cdcc66" // core
+    implementation "org.solverslib:pedroPathing:SNAPSHOT-7cdcc66" // SolversLib PedroPathing integration
+
+    // PedroPathing
+    implementation 'com.pedropathing:ftc:2.0.1'
+    implementation 'com.pedropathing:telemetry:0.0.6'
+
+    // Panels (FTCdashboard replacement)
+    implementation 'com.bylazar:fullpanels:1.0.2'
 }
