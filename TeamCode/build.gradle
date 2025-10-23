@@ -30,10 +30,6 @@ repositories {
     // SolversLib
     maven { url = "https://repo.dairy.foundation/releases" }
     maven { url = "https://repo.dairy.foundation/snapshots" }
-
-    // PedroPathing
-    maven { url = 'https://maven.pedropathing.com' }
-    maven { url = "https://mymaven.bylazar.com/releases" }
 }
 
 dependencies {
@@ -42,11 +38,4 @@ dependencies {
     // SolversLib
     implementation "org.solverslib:core:SNAPSHOT-7cdcc66" // core
     implementation "org.solverslib:pedroPathing:SNAPSHOT-7cdcc66" // SolversLib PedroPathing integration
-
-    // PedroPathing
-    implementation 'com.pedropathing:ftc:2.0.2'
-    implementation 'com.pedropathing:telemetry:1.0.0'
-
-    // Panels (FTCdashboard replacement)
-    implementation 'com.bylazar:fullpanels:1.0.2'
 }

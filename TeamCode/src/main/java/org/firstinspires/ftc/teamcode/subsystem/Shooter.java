@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
-import com.seattlesolvers.solverslib.hardware.motors.CRServo;
 
 public class Shooter extends SubsystemBase {
     DcMotor shooterMotor;
@@ -17,21 +18,15 @@ public class Shooter extends SubsystemBase {
         rightServo = hardwareMap.get(CRServo.class, "rightShooterServo");
 
         //TODO: choose correct servo
-        leftServo.setInverted(true);
+        leftServo.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void setShooterMotorPower(double power){
         shooterMotor.setPower(power);
     }
 
-    public void launch(){
-        leftServo.set(1);
-        rightServo.set(1);
-
-        ElapsedTime timer = new ElapsedTime();
-        while (timer.time() < 0.5){}
-
-        leftServo.stop();
-        rightServo.stop();
+    public void setLaunchServoPower(double power){
+        leftServo.setPower(power);
+        rightServo.setPower(power);
     }
 }
