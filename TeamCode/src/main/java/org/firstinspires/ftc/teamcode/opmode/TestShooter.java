@@ -4,6 +4,7 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.teamcode.subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystem.Shooter;
@@ -21,7 +22,8 @@ public class TestShooter extends OpMode {
         telemetryManager = PanelsTelemetry.INSTANCE.getTelemetry();
         shooter = new Shooter();
         shooter.init(hardwareMap);
-        drivetrain = new Drivetrain(hardwareMap);
+        drivetrain = new Drivetrain();
+        drivetrain.init(hardwareMap, new GamepadEx(gamepad1));
     }
 
     @Override

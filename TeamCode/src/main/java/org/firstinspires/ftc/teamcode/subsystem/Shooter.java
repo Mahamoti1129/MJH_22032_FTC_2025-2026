@@ -10,12 +10,17 @@ import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
 public class Shooter extends SubsystemBase {
-    private TelemetryManager telemetryManager = PanelsTelemetry.INSTANCE.getTelemetry();
+    private TelemetryManager telemetryManager;
 
     public MotorEx flywheelMotor;
     CRServo leftServo;
     CRServo rightServo;
+
+    private double requestedVelocity = 0;
+
     public void init(HardwareMap hardwareMap) {
+        telemetryManager = PanelsTelemetry.INSTANCE.getTelemetry();
+
         flywheelMotor = new MotorEx(hardwareMap, "shooterMotor", Motor.GoBILDA.BARE);
         flywheelMotor.setRunMode(Motor.RunMode.VelocityControl);
         flywheelMotor.setVeloCoefficients(
@@ -41,13 +46,27 @@ public class Shooter extends SubsystemBase {
         leftServo.setPower(power);
         rightServo.setPower(power);
     }
-/*
+
+    public double getRequestedVelocity() {
+        return requestedVelocity;
+    }
+
+    public void setRequestedVelocity(double requestedVelocity) {
+        this.requestedVelocity = requestedVelocity;
+    }
+
+    public void flywheelToRequestedVelocity(){
+        setFlywheelVelocity(requestedVelocity);
+    }
 
     @Override
     public void periodic() {
-        telemetryManager.addData("flywheel velocity", flywheelMotor.getVelocity());
-        telemetryManager.addData("flywheelAtVelocity", flywheelMotor.getCorrectedVelocity())
+        flywheelMotor.setVelocity(requestedVelocity);
+
+        telemetryManager.addData("flywheelVelocity", flywheelMotor.getVelocity());
+        telemetryManager.addData("flywheelCorrectedVelocity", flywheelMotor.getCorrectedVelocity());
+        telemetryManager.addData("requestedVelocity", requestedVelocity);
+        telemetryManager.addData("flywheelAtRequestedVelocity", Math.abs(requestedVelocity - flywheelMotor.getVelocity()) < 10);
         telemetryManager.update();
     }
-*/
 }
