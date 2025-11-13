@@ -36,6 +36,6 @@ dependencies {
     implementation project(':FtcRobotController')
 
     // SolversLib
-    implementation "org.solverslib:core:SNAPSHOT-7cdcc66" // core
-    implementation "org.solverslib:pedroPathing:SNAPSHOT-7cdcc66" // SolversLib PedroPathing integration
+    implementation "org.solverslib:core:0.3.3" // core
+    implementation "org.solverslib:pedroPathing:0.3.3" // SolversLib PedroPathing integration
 }

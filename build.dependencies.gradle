@@ -16,10 +16,10 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
     // PedroPathing
-    implementation 'com.pedropathing:ftc:2.0.3'
+    implementation 'com.pedropathing:ftc:2.0.4'
     implementation 'com.pedropathing:telemetry:1.0.0'
 
     // Panels (FTCdashboard replacement)
-    implementation 'com.bylazar:fullpanels:1.0.6'
+    implementation 'com.bylazar:fullpanels:1.0.9'
 }
 
