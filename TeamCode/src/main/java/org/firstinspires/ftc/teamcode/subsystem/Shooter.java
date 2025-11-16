@@ -52,11 +52,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setRequestedVelocity(double requestedVelocity) {
-        this.requestedVelocity = requestedVelocity;
-    }
-
-    public void flywheelToRequestedVelocity(){
-        setFlywheelVelocity(requestedVelocity);
+        this.requestedVelocity = Math.clamp(requestedVelocity, 0, flywheelMotor.ACHIEVABLE_MAX_TICKS_PER_SECOND);
     }
 
     @Override

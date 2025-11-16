@@ -4,45 +4,53 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
+import org.firstinspires.ftc.teamcode.subsystem.Camera;
 import org.firstinspires.ftc.teamcode.subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystem.Shooter;
 
-@TeleOp(name="CommandOpMode Test", group="TeleOp")
+import static com.seattlesolvers.solverslib.gamepad.GamepadKeys.Button.*;
+
+@TeleOp(name="Competition TeleOp", group="TeleOp")
 public class CommandTeleOp extends CommandOpMode {
     private Shooter shooter;
     private Drivetrain drivetrain;
+    private Camera camera;
 
     private GamepadEx driverOp, toolOp;
 
     @Override
     public void initialize() {
+        driverOp = new GamepadEx(gamepad1);
+        toolOp = new GamepadEx(gamepad2);
+
         shooter = new Shooter();
         shooter.init(hardwareMap);
+
         drivetrain = new Drivetrain();
         drivetrain.init(hardwareMap, driverOp);
         drivetrain.follower.startTeleopDrive();
 
-        register(shooter, drivetrain);
+        camera = new Camera();
+        camera.init(hardwareMap);
 
-        driverOp = new GamepadEx(gamepad1);
-        toolOp = new GamepadEx(gamepad2);
+        register(shooter, drivetrain, camera);
 
-        driverOp.getGamepadButton(GamepadKeys.Button.A).whenPressed(() -> shooter.setRequestedVelocity(1500));
-        driverOp.getGamepadButton(GamepadKeys.Button.B).whenPressed(() -> shooter.setRequestedVelocity(0));
-        driverOp.getGamepadButton(GamepadKeys.Button.X).whenPressed(() -> shooter.setRequestedVelocity(shooter.getFlywheelVelocity() + 500));
-        driverOp.getGamepadButton(GamepadKeys.Button.Y).whenPressed(() -> shooter.setRequestedVelocity(shooter.getFlywheelVelocity() - 500));
 
-        driverOp.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).toggleWhenPressed(
-                () -> drivetrain.follower.setMaxPower(0.25),
-                () -> drivetrain.follower.setMaxPower(1.0)
-        );
+        toolOp.getGamepadButton(A).whenPressed(new InstantCommand(() -> shooter.setRequestedVelocity(1400)));
+        toolOp.getGamepadButton(B).whenPressed(new InstantCommand(() -> shooter.setRequestedVelocity(0)));
+        toolOp.getGamepadButton(X).whenPressed(new InstantCommand(() -> shooter.setRequestedVelocity(shooter.getRequestedVelocity() + 280)));
+        toolOp.getGamepadButton(Y).whenPressed(new InstantCommand(() -> shooter.setRequestedVelocity(shooter.getRequestedVelocity() - 280)));
 
-        driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).toggleWhenPressed(
-                () -> shooter.setLaunchServoPower(1),
-                () -> shooter.setLaunchServoPower(0)
-        );
+        driverOp.getGamepadButton(LEFT_BUMPER)
+                .whileHeld(new InstantCommand(() -> drivetrain.follower.setMaxPower(0.25)))
+                .whenReleased(new InstantCommand(() -> drivetrain.follower.setMaxPower(1)));
+
+        toolOp.getGamepadButton(RIGHT_BUMPER)
+                .whileHeld(new InstantCommand(() -> shooter.setLaunchServoPower(1)))
+                .whenReleased(new InstantCommand(() -> shooter.setLaunchServoPower(0)));
     }
 }
