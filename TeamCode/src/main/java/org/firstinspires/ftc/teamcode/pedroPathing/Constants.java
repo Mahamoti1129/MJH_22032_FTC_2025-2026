@@ -16,14 +16,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(5)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0))
-            .headingPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0))
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0.2))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.4, 0, 0.01, 0.02))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.1, 0, 0.01, 0.6, 0))
             .centripetalScaling(0.005)
             .forwardZeroPowerAcceleration(-29.0)
             .lateralZeroPowerAcceleration(-45.25);
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
+    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 0.2, 0.005);
 
     public static MecanumConstants drivetrainConstants = new MecanumConstants()
             .maxPower(1)
@@ -35,7 +35,7 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-//            .useBrakeModeInTeleOp(true)
+            .useBrakeModeInTeleOp(true)
             .xVelocity(59.844)
             .yVelocity(45.4475);
 

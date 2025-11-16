@@ -4,7 +4,7 @@ import com.bylazar.configurables.annotations.Configurable;
 
 @Configurable
 public class ShooterConstants {
-    public static double kP = 0.1;
-    public static double kI = 0.02;
-    public static double kD = 0.01;
+    public static Double kP = 0.5;
+    public static Double kI = 0.5;
+    public static Double kD = 0.5;
 }

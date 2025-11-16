@@ -32,7 +32,7 @@ public class Drivetrain extends SubsystemBase {
     @Override
     public void periodic() {
         drive(
-                -driverOp.getLeftY(),
+                driverOp.getLeftY(),
                 -driverOp.getLeftX(),
                 -driverOp.getRightX()
         );
