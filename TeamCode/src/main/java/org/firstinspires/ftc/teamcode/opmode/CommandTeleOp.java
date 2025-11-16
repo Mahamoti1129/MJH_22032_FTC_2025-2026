@@ -28,17 +28,16 @@ public class CommandTeleOp extends CommandOpMode {
         toolOp = new GamepadEx(gamepad2);
 
         shooter = new Shooter();
-        shooter.init(hardwareMap);
+        shooter.init(hardwareMap, telemetry);
 
         drivetrain = new Drivetrain();
-        drivetrain.init(hardwareMap, driverOp);
+        drivetrain.init(hardwareMap, driverOp, false);
         drivetrain.follower.startTeleopDrive();
 
         camera = new Camera();
         camera.init(hardwareMap);
 
         register(shooter, drivetrain, camera);
-
 
         toolOp.getGamepadButton(A).whenPressed(new InstantCommand(() -> shooter.setRequestedVelocity(1400)));
         toolOp.getGamepadButton(B).whenPressed(new InstantCommand(() -> shooter.setRequestedVelocity(0)));
@@ -52,5 +51,7 @@ public class CommandTeleOp extends CommandOpMode {
         toolOp.getGamepadButton(RIGHT_BUMPER)
                 .whileHeld(new InstantCommand(() -> shooter.setLaunchServoPower(1)))
                 .whenReleased(new InstantCommand(() -> shooter.setLaunchServoPower(0)));
-    }
+        toolOp.getGamepadButton(LEFT_BUMPER)
+                .whileHeld(new InstantCommand(() -> shooter.setLaunchServoPower(-1)))
+                .whenReleased(new InstantCommand(() -> shooter.setLaunchServoPower(0)));}
 }

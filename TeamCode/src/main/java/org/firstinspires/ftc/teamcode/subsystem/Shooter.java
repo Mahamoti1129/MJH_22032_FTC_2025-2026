@@ -9,8 +9,11 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class Shooter extends SubsystemBase {
     private TelemetryManager telemetryManager;
+    private Telemetry telemetry;
 
     public MotorEx flywheelMotor;
     CRServo leftServo;
@@ -18,8 +21,9 @@ public class Shooter extends SubsystemBase {
 
     private double requestedVelocity = 0;
 
-    public void init(HardwareMap hardwareMap) {
+    public void init(HardwareMap hardwareMap, Telemetry telemetry) {
         telemetryManager = PanelsTelemetry.INSTANCE.getTelemetry();
+        this.telemetry = telemetry;
 
         flywheelMotor = new MotorEx(hardwareMap, "shooterMotor", Motor.GoBILDA.BARE);
         flywheelMotor.setRunMode(Motor.RunMode.VelocityControl);
@@ -63,6 +67,6 @@ public class Shooter extends SubsystemBase {
         telemetryManager.addData("flywheelCorrectedVelocity", flywheelMotor.getCorrectedVelocity());
         telemetryManager.addData("requestedVelocity", requestedVelocity);
         telemetryManager.addData("flywheelAtRequestedVelocity", Math.abs(requestedVelocity - flywheelMotor.getVelocity()) < 10);
-        telemetryManager.update();
+        telemetryManager.update(telemetry);
     }
 }

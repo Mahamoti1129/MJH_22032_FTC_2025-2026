@@ -21,9 +21,9 @@ public class TestShooter extends OpMode {
     public void init() {
         telemetryManager = PanelsTelemetry.INSTANCE.getTelemetry();
         shooter = new Shooter();
-        shooter.init(hardwareMap);
+        shooter.init(hardwareMap, telemetry);
         drivetrain = new Drivetrain();
-        drivetrain.init(hardwareMap, new GamepadEx(gamepad1));
+        drivetrain.init(hardwareMap, new GamepadEx(gamepad1), false);
     }
 
     @Override

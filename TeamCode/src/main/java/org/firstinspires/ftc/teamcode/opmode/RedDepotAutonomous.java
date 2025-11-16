@@ -27,9 +27,9 @@ public class RedDepotAutonomous extends CommandOpMode {
     private GamepadEx driverOp, toolOp;
 
     private final Pose
-            startingPose = new Pose(), //TODO
-            shootingPose = new Pose(), //TODO
-            parkPose = new Pose(); //TODO
+            startingPose = new Pose(18, 126, Math.PI), //TODO
+            shootingPose = new Pose(60, 7*12, 2.4), //TODO
+            parkPose = new Pose(4*48, 4*48, Math.PI); //TODO
 
     private PathChain startToShootingPosition, shootingPositionToPark;
 
@@ -53,10 +53,10 @@ public class RedDepotAutonomous extends CommandOpMode {
         toolOp = new GamepadEx(gamepad2);
 
         shooter = new Shooter();
-        shooter.init(hardwareMap);
+        shooter.init(hardwareMap, telemetry);
 
         drivetrain = new Drivetrain();
-        drivetrain.init(hardwareMap, driverOp);
+        drivetrain.init(hardwareMap, driverOp, true);
 
         camera = new Camera();
         camera.init(hardwareMap);
@@ -73,15 +73,15 @@ public class RedDepotAutonomous extends CommandOpMode {
 
                 // initial flywheel spinup
                 new InstantCommand(() -> shooter.setRequestedVelocity(getShooterVelocityFromDistance())),
-                new WaitCommand(2000), //TODO
+                new WaitCommand(4000), //TODO
 
                 // fire 1
                 fireSequence(),
-                new WaitCommand(2000), //TODO
+                new WaitCommand(3000), //TODO
 
                 // fire 2
                 fireSequence(),
-                new WaitCommand(2000), //TODO
+                new WaitCommand(3000), //TODO
 
                 // fire 3
                 fireSequence(),
@@ -97,7 +97,7 @@ public class RedDepotAutonomous extends CommandOpMode {
 
     private double getShooterVelocityFromDistance() {
         //TODO: use camera to detect distance to QR code, use interpolated lookup table to calculate velocity
-        return 1400;
+        return 1400 + 2*280;
     }
 
     private SequentialCommandGroup fireSequence(){

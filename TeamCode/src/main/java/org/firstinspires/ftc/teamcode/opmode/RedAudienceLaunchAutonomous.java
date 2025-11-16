@@ -53,10 +53,10 @@ public class RedAudienceLaunchAutonomous extends CommandOpMode {
         toolOp = new GamepadEx(gamepad2);
 
         shooter = new Shooter();
-        shooter.init(hardwareMap);
+        shooter.init(hardwareMap, telemetry);
 
         drivetrain = new Drivetrain();
-        drivetrain.init(hardwareMap, driverOp);
+        drivetrain.init(hardwareMap, driverOp, true);
 
         camera = new Camera();
         camera.init(hardwareMap);
