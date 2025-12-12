@@ -1,18 +1,21 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
-import com.bylazar.telemetry.PanelsTelemetry;
-import com.bylazar.telemetry.TelemetryManager;
+import static com.seattlesolvers.solverslib.gamepad.GamepadKeys.Button.A;
+import static com.seattlesolvers.solverslib.gamepad.GamepadKeys.Button.B;
+import static com.seattlesolvers.solverslib.gamepad.GamepadKeys.Button.LEFT_BUMPER;
+import static com.seattlesolvers.solverslib.gamepad.GamepadKeys.Button.RIGHT_BUMPER;
+import static com.seattlesolvers.solverslib.gamepad.GamepadKeys.Button.X;
+import static com.seattlesolvers.solverslib.gamepad.GamepadKeys.Button.Y;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
-import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
+import com.seattlesolvers.solverslib.util.InterpLUT;
 
 import org.firstinspires.ftc.teamcode.subsystem.Camera;
 import org.firstinspires.ftc.teamcode.subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystem.Shooter;
-
-import static com.seattlesolvers.solverslib.gamepad.GamepadKeys.Button.*;
 
 @TeleOp(name="Competition TeleOp", group="TeleOp")
 public class CommandTeleOp extends CommandOpMode {
@@ -49,9 +52,15 @@ public class CommandTeleOp extends CommandOpMode {
                 .whenReleased(new InstantCommand(() -> drivetrain.follower.setMaxPower(1)));
 
         toolOp.getGamepadButton(RIGHT_BUMPER)
-                .whileHeld(new InstantCommand(() -> shooter.setLaunchServoPower(1)))
-                .whenReleased(new InstantCommand(() -> shooter.setLaunchServoPower(0)));
+                .whenPressed(shooter.fireSequence());
+
         toolOp.getGamepadButton(LEFT_BUMPER)
                 .whileHeld(new InstantCommand(() -> shooter.setLaunchServoPower(-1)))
-                .whenReleased(new InstantCommand(() -> shooter.setLaunchServoPower(0)));}
+                .whenReleased(new InstantCommand(() -> shooter.setLaunchServoPower(0)));
+
+        InterpLUT flywheelDistancePowerLookup = new InterpLUT();
+        flywheelDistancePowerLookup.add(10, 280);
+        flywheelDistancePowerLookup.add(100, 2800);
+        flywheelDistancePowerLookup.createLUT();
+    }
 }

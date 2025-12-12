@@ -27,9 +27,9 @@ public class RedAudienceLaunchAutonomous extends CommandOpMode {
     private GamepadEx driverOp, toolOp;
 
     private final Pose
-            startingPose = new Pose(), //TODO
-            shootingPose = new Pose(), //TODO
-            parkPose = new Pose(); //TODO
+            startingPose = new Pose(95.875, 8.052, Math.toRadians(90)),
+            shootingPose = new Pose(81.644, 13.482, Math.toRadians(70)),
+            parkPose = new Pose(95.126, 48.312, Math.toRadians(90));
 
     private PathChain startToShootingPosition, shootingPositionToPark;
 
@@ -73,15 +73,15 @@ public class RedAudienceLaunchAutonomous extends CommandOpMode {
 
                 // initial flywheel spinup
                 new InstantCommand(() -> shooter.setRequestedVelocity(getShooterVelocityFromDistance())),
-                new WaitCommand(2000), //TODO
+                new WaitCommand(3000),
 
                 // fire 1
                 fireSequence(),
-                new WaitCommand(2000), //TODO
+                new WaitCommand(2000),
 
                 // fire 2
                 fireSequence(),
-                new WaitCommand(2000), //TODO
+                new WaitCommand(2000),
 
                 // fire 3
                 fireSequence(),
@@ -97,13 +97,13 @@ public class RedAudienceLaunchAutonomous extends CommandOpMode {
 
     private double getShooterVelocityFromDistance() {
         //TODO: use camera to detect distance to QR code, use interpolated lookup table to calculate velocity
-        return 1400;
+        return 2800;
     }
 
     private SequentialCommandGroup fireSequence(){
         return new SequentialCommandGroup(
                 new InstantCommand(() -> shooter.setLaunchServoPower(1)),
-                new WaitCommand(200), //TODO
+                new WaitCommand(640),
                 new InstantCommand(() -> shooter.setLaunchServoPower(0))
         );
     }
@@ -115,6 +115,6 @@ public class RedAudienceLaunchAutonomous extends CommandOpMode {
         telemetryManager.addData("X", drivetrain.follower.getPose().getX());
         telemetryManager.addData("Y", drivetrain.follower.getPose().getY());
         telemetryManager.addData("Heading", drivetrain.follower.getPose().getHeading());
-        telemetryManager.update();
+        telemetryManager.update(telemetry);
     }
 }

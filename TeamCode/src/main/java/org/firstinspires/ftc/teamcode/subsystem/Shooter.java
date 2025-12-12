@@ -5,7 +5,10 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
+import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
@@ -62,11 +65,19 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         flywheelMotor.setVelocity(requestedVelocity);
-
-        telemetryManager.addData("flywheelVelocity", flywheelMotor.getVelocity());
-        telemetryManager.addData("flywheelCorrectedVelocity", flywheelMotor.getCorrectedVelocity());
-        telemetryManager.addData("requestedVelocity", requestedVelocity);
-        telemetryManager.addData("flywheelAtRequestedVelocity", Math.abs(requestedVelocity - flywheelMotor.getVelocity()) < 10);
-        telemetryManager.update(telemetry);
+//
+//        telemetryManager.addData("flywheelCorrectedVelocity", flywheelMotor.getCorrectedVelocity());
+//        telemetryManager.addData("requestedVelocity", requestedVelocity);
+//        telemetryManager.addData("flywheelAtRequestedVelocity", Math.abs(requestedVelocity - flywheelMotor.getCorrectedVelocity()) < 28);
+//        telemetryManager.update(telemetry);
     }
+
+    public SequentialCommandGroup fireSequence(){
+        return new SequentialCommandGroup(
+                new InstantCommand(() -> this.setLaunchServoPower(1)),
+                new WaitCommand(640),
+                new InstantCommand(() -> this.setLaunchServoPower(0))
+        );
+    }
+
 }

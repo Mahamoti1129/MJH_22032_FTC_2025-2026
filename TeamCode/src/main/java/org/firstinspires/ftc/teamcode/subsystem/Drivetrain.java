@@ -40,6 +40,8 @@ public class Drivetrain extends SubsystemBase {
                     -driverOp.getLeftX(),
                     -driverOp.getRightX()
             );
+        }else {
+            follower.update();
         }
     }
 }

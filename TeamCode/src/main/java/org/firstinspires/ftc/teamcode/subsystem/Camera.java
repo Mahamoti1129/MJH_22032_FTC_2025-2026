@@ -24,19 +24,30 @@ public class Camera extends SubsystemBase {
 
     public void init(HardwareMap hardwareMap){
         aprilTagProcessor = AprilTagProcessor.easyCreateWithDefaults();
-//        PanelsVisionProcessor panelsProcessor = new PanelsVisionProcessor();
 
         visionPortal = VisionPortal.easyCreateWithDefaults(
                 hardwareMap.get(WebcamName.class, "Webcam 1"),
                 aprilTagProcessor
-//                ,panelsProcessor
         );
-
-//        PanelsCameraStream.startStream(panelsProcessor);
     }
 
     @Override
     public void periodic() {
         aprilTagDetections = aprilTagProcessor.getDetections();
+
+
+    }
+
+    public List<AprilTagDetection> getAprilTagDetections(){
+        return aprilTagDetections;
+    }
+
+    public AprilTagDetection getAprilTagDetection(int id){
+        for (AprilTagDetection detection : aprilTagDetections){
+            if (detection.id == id){
+                return detection;
+            }
+        }
+        return null;
     }
 }

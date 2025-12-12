@@ -27,9 +27,9 @@ public class RedDepotAutonomous extends CommandOpMode {
     private GamepadEx driverOp, toolOp;
 
     private final Pose
-            startingPose = new Pose(18, 126, Math.PI), //TODO
-            shootingPose = new Pose(60, 7*12, 2.4), //TODO
-            parkPose = new Pose(4*48, 4*48, Math.PI); //TODO
+            startingPose = new Pose(123.027, 123.215, Math.toRadians(37)),
+            shootingPose = new Pose(96.437, 95.688, Math.toRadians(46)),
+            parkPose = new Pose(96.250, 72.281, Math.toRadians(90));
 
     private PathChain startToShootingPosition, shootingPositionToPark;
 
@@ -73,18 +73,26 @@ public class RedDepotAutonomous extends CommandOpMode {
 
                 // initial flywheel spinup
                 new InstantCommand(() -> shooter.setRequestedVelocity(getShooterVelocityFromDistance())),
-                new WaitCommand(4000), //TODO
+                new InstantCommand(() -> telemetryManager.addLine("waiting 2s for flywheel spinup 1")),
+                new WaitCommand(2000),
+
+                new InstantCommand(() -> telemetryManager.addLine("waited 2s, firing 1")),
 
                 // fire 1
-                fireSequence(),
-                new WaitCommand(3000), //TODO
+                fireSequence(1),
+                new InstantCommand(() -> telemetryManager.addLine("waiting 2s for flywheel spinup 2")),
+                new WaitCommand(2000),
+                new InstantCommand(() -> telemetryManager.addLine("waited 2s, firing 2")),
 
                 // fire 2
-                fireSequence(),
-                new WaitCommand(3000), //TODO
+                fireSequence(2),
+                new InstantCommand(() -> telemetryManager.addLine("waiting 2s for flywheel spinup 3")),
+                new WaitCommand(2000),
+                new InstantCommand(() -> telemetryManager.addLine("waited 2s, firing 3")),
 
                 // fire 3
-                fireSequence(),
+                fireSequence(3),
+                new InstantCommand(() -> telemetryManager.addLine("navigating to park")),
 
                 // shut down flywheel
                 new InstantCommand(() -> shooter.setRequestedVelocity(0)),
@@ -100,11 +108,13 @@ public class RedDepotAutonomous extends CommandOpMode {
         return 1400 + 2*280;
     }
 
-    private SequentialCommandGroup fireSequence(){
+    private SequentialCommandGroup fireSequence(int count){
         return new SequentialCommandGroup(
+                new InstantCommand(() -> telemetryManager.addLine("firing " + count + " start")),
                 new InstantCommand(() -> shooter.setLaunchServoPower(1)),
-                new WaitCommand(200), //TODO
-                new InstantCommand(() -> shooter.setLaunchServoPower(0))
+                new WaitCommand(640),
+                new InstantCommand(() -> shooter.setLaunchServoPower(0)),
+                new InstantCommand(() -> telemetryManager.addLine("firing " + count + " complete"))
         );
     }
 
@@ -112,9 +122,6 @@ public class RedDepotAutonomous extends CommandOpMode {
     public void run() {
         super.run();
 
-        telemetryManager.addData("X", drivetrain.follower.getPose().getX());
-        telemetryManager.addData("Y", drivetrain.follower.getPose().getY());
-        telemetryManager.addData("Heading", drivetrain.follower.getPose().getHeading());
-        telemetryManager.update();
+        telemetryManager.update(telemetry);
     }
 }
