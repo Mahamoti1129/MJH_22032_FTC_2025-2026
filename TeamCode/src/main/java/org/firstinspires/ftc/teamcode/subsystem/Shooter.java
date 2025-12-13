@@ -65,11 +65,11 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         flywheelMotor.setVelocity(requestedVelocity);
-//
-//        telemetryManager.addData("flywheelCorrectedVelocity", flywheelMotor.getCorrectedVelocity());
-//        telemetryManager.addData("requestedVelocity", requestedVelocity);
-//        telemetryManager.addData("flywheelAtRequestedVelocity", Math.abs(requestedVelocity - flywheelMotor.getCorrectedVelocity()) < 28);
-//        telemetryManager.update(telemetry);
+
+        telemetryManager.addData("flywheelCorrectedVelocity", flywheelMotor.getCorrectedVelocity());
+        telemetryManager.addData("requestedVelocity", requestedVelocity);
+        telemetryManager.addData("flywheelAtRequestedVelocity", Math.abs(requestedVelocity - flywheelMotor.getCorrectedVelocity()) < 28);
+        telemetryManager.update(telemetry);
     }
 
     public SequentialCommandGroup fireSequence(){

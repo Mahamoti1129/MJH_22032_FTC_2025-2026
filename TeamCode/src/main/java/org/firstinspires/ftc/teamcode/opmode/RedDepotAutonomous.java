@@ -8,6 +8,8 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
+import com.seattlesolvers.solverslib.command.RepeatCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
@@ -56,10 +58,10 @@ public class RedDepotAutonomous extends CommandOpMode {
         shooter.init(hardwareMap, telemetry);
 
         drivetrain = new Drivetrain();
-        drivetrain.init(hardwareMap, driverOp, true);
+        drivetrain.init(hardwareMap, driverOp);
 
         camera = new Camera();
-        camera.init(hardwareMap);
+        camera.init(hardwareMap, telemetry);
 
         register(shooter, drivetrain, camera);
 
@@ -73,26 +75,18 @@ public class RedDepotAutonomous extends CommandOpMode {
 
                 // initial flywheel spinup
                 new InstantCommand(() -> shooter.setRequestedVelocity(getShooterVelocityFromDistance())),
-                new InstantCommand(() -> telemetryManager.addLine("waiting 2s for flywheel spinup 1")),
                 new WaitCommand(2000),
-
-                new InstantCommand(() -> telemetryManager.addLine("waited 2s, firing 1")),
 
                 // fire 1
-                fireSequence(1),
-                new InstantCommand(() -> telemetryManager.addLine("waiting 2s for flywheel spinup 2")),
+                shooter.fireSequence(),
                 new WaitCommand(2000),
-                new InstantCommand(() -> telemetryManager.addLine("waited 2s, firing 2")),
 
                 // fire 2
-                fireSequence(2),
-                new InstantCommand(() -> telemetryManager.addLine("waiting 2s for flywheel spinup 3")),
+                shooter.fireSequence(),
                 new WaitCommand(2000),
-                new InstantCommand(() -> telemetryManager.addLine("waited 2s, firing 3")),
 
                 // fire 3
-                fireSequence(3),
-                new InstantCommand(() -> telemetryManager.addLine("navigating to park")),
+                shooter.fireSequence(),
 
                 // shut down flywheel
                 new InstantCommand(() -> shooter.setRequestedVelocity(0)),
@@ -100,28 +94,17 @@ public class RedDepotAutonomous extends CommandOpMode {
                 new FollowPathCommand(drivetrain.follower, shootingPositionToPark)
         );
 
-        schedule(autonomousSequence);
+
+        ParallelCommandGroup parallelSequence = new ParallelCommandGroup(
+                new RepeatCommand(new InstantCommand(() -> drivetrain.follower.update())),
+                autonomousSequence
+        );
+
+        schedule(parallelSequence);
     }
 
     private double getShooterVelocityFromDistance() {
         //TODO: use camera to detect distance to QR code, use interpolated lookup table to calculate velocity
-        return 1400 + 2*280;
-    }
-
-    private SequentialCommandGroup fireSequence(int count){
-        return new SequentialCommandGroup(
-                new InstantCommand(() -> telemetryManager.addLine("firing " + count + " start")),
-                new InstantCommand(() -> shooter.setLaunchServoPower(1)),
-                new WaitCommand(640),
-                new InstantCommand(() -> shooter.setLaunchServoPower(0)),
-                new InstantCommand(() -> telemetryManager.addLine("firing " + count + " complete"))
-        );
-    }
-
-    @Override
-    public void run() {
-        super.run();
-
-        telemetryManager.update(telemetry);
+        return 6.5*280;
     }
 }

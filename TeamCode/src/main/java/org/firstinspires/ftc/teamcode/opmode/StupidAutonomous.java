@@ -9,6 +9,8 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
+import com.seattlesolvers.solverslib.command.RepeatCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
@@ -51,10 +53,10 @@ public class StupidAutonomous extends CommandOpMode {
         shooter.init(hardwareMap, telemetry);
 
         drivetrain = new Drivetrain();
-        drivetrain.init(hardwareMap, driverOp, true);
+        drivetrain.init(hardwareMap, driverOp);
 
         camera = new Camera();
-        camera.init(hardwareMap);
+        camera.init(hardwareMap, telemetry);
 
         register(shooter, drivetrain, camera);
 
@@ -62,16 +64,11 @@ public class StupidAutonomous extends CommandOpMode {
         drivetrain.follower.setMaxPower(0.5);
         buildPaths();
 
-        schedule(new FollowPathCommand(drivetrain.follower, startToPark));
-    }
+        ParallelCommandGroup parallelSequence = new ParallelCommandGroup(
+                new RepeatCommand(new InstantCommand(() -> drivetrain.follower.update())),
+                new FollowPathCommand(drivetrain.follower, startToPark)
+        );
 
-    @Override
-    public void run() {
-        super.run();
-
-        telemetryManager.addData("X", drivetrain.follower.getPose().getX());
-        telemetryManager.addData("Y", drivetrain.follower.getPose().getY());
-        telemetryManager.addData("Heading", drivetrain.follower.getPose().getHeading());
-        telemetryManager.update(telemetry);
+        schedule(parallelSequence);
     }
 }

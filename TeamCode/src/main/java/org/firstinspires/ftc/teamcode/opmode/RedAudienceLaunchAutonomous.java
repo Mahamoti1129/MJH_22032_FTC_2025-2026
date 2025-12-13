@@ -8,6 +8,8 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
+import com.seattlesolvers.solverslib.command.RepeatCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
@@ -56,10 +58,10 @@ public class RedAudienceLaunchAutonomous extends CommandOpMode {
         shooter.init(hardwareMap, telemetry);
 
         drivetrain = new Drivetrain();
-        drivetrain.init(hardwareMap, driverOp, true);
+        drivetrain.init(hardwareMap, driverOp);
 
         camera = new Camera();
-        camera.init(hardwareMap);
+        camera.init(hardwareMap, telemetry);
 
         register(shooter, drivetrain, camera);
 
@@ -76,15 +78,15 @@ public class RedAudienceLaunchAutonomous extends CommandOpMode {
                 new WaitCommand(3000),
 
                 // fire 1
-                fireSequence(),
+                shooter.fireSequence(),
                 new WaitCommand(2000),
 
                 // fire 2
-                fireSequence(),
+                shooter.fireSequence(),
                 new WaitCommand(2000),
 
                 // fire 3
-                fireSequence(),
+                shooter.fireSequence(),
 
                 // shut down flywheel
                 new InstantCommand(() -> shooter.setRequestedVelocity(0)),
@@ -92,29 +94,17 @@ public class RedAudienceLaunchAutonomous extends CommandOpMode {
                 new FollowPathCommand(drivetrain.follower, shootingPositionToPark)
         );
 
-        schedule(autonomousSequence);
+
+        ParallelCommandGroup parallelSequence = new ParallelCommandGroup(
+                new RepeatCommand(new InstantCommand(() -> drivetrain.follower.update())),
+                autonomousSequence
+        );
+
+        schedule(parallelSequence);
     }
 
     private double getShooterVelocityFromDistance() {
         //TODO: use camera to detect distance to QR code, use interpolated lookup table to calculate velocity
         return 2800;
-    }
-
-    private SequentialCommandGroup fireSequence(){
-        return new SequentialCommandGroup(
-                new InstantCommand(() -> shooter.setLaunchServoPower(1)),
-                new WaitCommand(640),
-                new InstantCommand(() -> shooter.setLaunchServoPower(0))
-        );
-    }
-
-    @Override
-    public void run() {
-        super.run();
-
-        telemetryManager.addData("X", drivetrain.follower.getPose().getX());
-        telemetryManager.addData("Y", drivetrain.follower.getPose().getY());
-        telemetryManager.addData("Heading", drivetrain.follower.getPose().getHeading());
-        telemetryManager.update(telemetry);
     }
 }
