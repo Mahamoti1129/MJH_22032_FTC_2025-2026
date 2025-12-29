@@ -58,7 +58,7 @@ public class BlueAudienceLaunchAutonomous extends CommandOpMode {
         shooter.init(hardwareMap, telemetry);
 
         drivetrain = new Drivetrain();
-        drivetrain.init(hardwareMap, driverOp);
+        drivetrain.init(hardwareMap, driverOp, true);
 
         camera = new Camera();
         camera.init(hardwareMap, telemetry);
@@ -94,12 +94,7 @@ public class BlueAudienceLaunchAutonomous extends CommandOpMode {
                 new FollowPathCommand(drivetrain.follower, shootingPositionToPark)
         );
 
-        ParallelCommandGroup parallelSequence = new ParallelCommandGroup(
-                new RepeatCommand(new InstantCommand(() -> drivetrain.follower.update())),
-                autonomousSequence
-        );
-
-        schedule(parallelSequence);
+        schedule(autonomousSequence);
     }
 
     private double getShooterVelocityFromDistance() {

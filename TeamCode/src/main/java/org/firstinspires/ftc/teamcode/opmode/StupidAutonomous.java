@@ -53,7 +53,7 @@ public class StupidAutonomous extends CommandOpMode {
         shooter.init(hardwareMap, telemetry);
 
         drivetrain = new Drivetrain();
-        drivetrain.init(hardwareMap, driverOp);
+        drivetrain.init(hardwareMap, driverOp, true);
 
         camera = new Camera();
         camera.init(hardwareMap, telemetry);
@@ -64,11 +64,6 @@ public class StupidAutonomous extends CommandOpMode {
         drivetrain.follower.setMaxPower(0.5);
         buildPaths();
 
-        ParallelCommandGroup parallelSequence = new ParallelCommandGroup(
-                new RepeatCommand(new InstantCommand(() -> drivetrain.follower.update())),
-                new FollowPathCommand(drivetrain.follower, startToPark)
-        );
-
-        schedule(parallelSequence);
+        schedule(new FollowPathCommand(drivetrain.follower, startToPark));
     }
 }

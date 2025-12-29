@@ -16,7 +16,10 @@ public class Drivetrain extends SubsystemBase {
     public Follower follower;
     public GamepadEx driverOp;
 
-    public void init(HardwareMap hardwareMap, GamepadEx driverOp){
+    private boolean autonomous = true;
+
+    public void init(HardwareMap hardwareMap, GamepadEx driverOp, boolean autonomous){
+        this.autonomous = autonomous;
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose());
         follower.update();
@@ -27,5 +30,18 @@ public class Drivetrain extends SubsystemBase {
     public void drive(double x, double y, double z){
         follower.setTeleOpDrive(x, y, z, robotCentric);
         follower.update();
+    }
+
+    @Override
+    public void periodic() {
+        if (!autonomous) {
+            drive(
+                    driverOp.getLeftY(),
+                    -driverOp.getLeftX(),
+                    -driverOp.getRightX()
+            );
+        }else {
+            follower.update();
+        }
     }
 }

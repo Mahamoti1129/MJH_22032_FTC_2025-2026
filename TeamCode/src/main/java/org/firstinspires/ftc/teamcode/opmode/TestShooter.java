@@ -23,7 +23,7 @@ public class TestShooter extends OpMode {
         shooter = new Shooter();
         shooter.init(hardwareMap, telemetry);
         drivetrain = new Drivetrain();
-        drivetrain.init(hardwareMap, new GamepadEx(gamepad1));
+        drivetrain.init(hardwareMap, new GamepadEx(gamepad1), false);
     }
 
     @Override

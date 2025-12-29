@@ -49,7 +49,7 @@ public class CommandTeleOp extends CommandOpMode {
         shooterDistanceSpeedLookupTable.createLUT();
 
         drivetrain = new Drivetrain();
-        drivetrain.init(hardwareMap, driverOp);
+        drivetrain.init(hardwareMap, driverOp, false);
         drivetrain.follower.startTeleopDrive();
 
         camera = new Camera();
@@ -93,14 +93,5 @@ public class CommandTeleOp extends CommandOpMode {
         flywheelDistancePowerLookup.add(10, 280);
         flywheelDistancePowerLookup.add(100, 2800);
         flywheelDistancePowerLookup.createLUT();
-    }
-
-    @Override
-    public void run() {
-        drivetrain.drive(
-                driverOp.getLeftY(),
-                -driverOp.getLeftX(),
-                -driverOp.getRightX()
-        );
     }
 }

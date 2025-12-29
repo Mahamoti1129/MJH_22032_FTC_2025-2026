@@ -58,7 +58,7 @@ public class RedAudienceLaunchAutonomous extends CommandOpMode {
         shooter.init(hardwareMap, telemetry);
 
         drivetrain = new Drivetrain();
-        drivetrain.init(hardwareMap, driverOp);
+        drivetrain.init(hardwareMap, driverOp, true);
 
         camera = new Camera();
         camera.init(hardwareMap, telemetry);
@@ -95,12 +95,7 @@ public class RedAudienceLaunchAutonomous extends CommandOpMode {
         );
 
 
-        ParallelCommandGroup parallelSequence = new ParallelCommandGroup(
-                new RepeatCommand(new InstantCommand(() -> drivetrain.follower.update())),
-                autonomousSequence
-        );
-
-        schedule(parallelSequence);
+        schedule(autonomousSequence);
     }
 
     private double getShooterVelocityFromDistance() {
