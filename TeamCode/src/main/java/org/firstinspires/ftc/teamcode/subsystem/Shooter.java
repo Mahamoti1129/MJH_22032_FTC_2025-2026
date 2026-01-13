@@ -39,6 +39,7 @@ public class Shooter extends SubsystemBase {
         leftServo = hardwareMap.get(CRServo.class, "leftShooterServo");
         rightServo = hardwareMap.get(CRServo.class, "rightShooterServo");
         leftServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.setLaunchServoPower(0);
     }
 
     public void setFlywheelVelocity(double v){
