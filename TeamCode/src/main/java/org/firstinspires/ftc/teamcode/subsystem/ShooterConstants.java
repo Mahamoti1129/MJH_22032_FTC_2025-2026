@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.seattlesolvers.solverslib.util.InterpLUT;
 
 @Configurable
 public class ShooterConstants {
