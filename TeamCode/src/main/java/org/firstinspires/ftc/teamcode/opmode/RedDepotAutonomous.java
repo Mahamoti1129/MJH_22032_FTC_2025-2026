@@ -30,8 +30,8 @@ public class RedDepotAutonomous extends CommandOpMode {
 
     private final Pose
             startingPose = new Pose(123.027, 123.215, Math.toRadians(37)),
-            shootingPose = new Pose(96.437, 95.688, Math.toRadians(46)),
-            parkPose = new Pose(96.250, 72.281, Math.toRadians(90));
+            shootingPose = new Pose(90.437, 96.688, Math.toRadians(46)),
+            parkPose = new Pose(96.250, 134.281, Math.toRadians(90));
 
     private PathChain startToShootingPosition, shootingPositionToPark;
 
@@ -67,7 +67,7 @@ public class RedDepotAutonomous extends CommandOpMode {
 
         buildPaths();
         drivetrain.follower.setStartingPose(startingPose);
-        drivetrain.follower.setMaxPower(0.5);
+        drivetrain.follower.setMaxPower(0.6);
 
         SequentialCommandGroup autonomousSequence = new SequentialCommandGroup(
                 // shooting position
@@ -75,15 +75,15 @@ public class RedDepotAutonomous extends CommandOpMode {
 
                 // initial flywheel spinup
                 new InstantCommand(() -> shooter.setRequestedVelocity(getShooterVelocityFromDistance())),
-                new WaitCommand(2000),
+                new WaitCommand(4500),
 
                 // fire 1
                 shooter.fireSequence(),
-                new WaitCommand(2000),
+                new WaitCommand(3500),
 
                 // fire 2
                 shooter.fireSequence(),
-                new WaitCommand(2000),
+                new WaitCommand(3500),
 
                 // fire 3
                 shooter.fireSequence(),

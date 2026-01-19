@@ -31,7 +31,7 @@ public class BlueDepotAutonomous extends CommandOpMode {
     private final Pose
             startingPose = new Pose(21.160, 123.776, Math.toRadians(144)),
             shootingPose = new Pose(47.938, 96.062, Math.toRadians(139)),
-            parkPose = new Pose(47.938, 72.281, Math.toRadians(90));
+            parkPose = new Pose(47.938, 134.281, Math.toRadians(90));
 
     private PathChain startToShootingPosition, shootingPositionToPark;
 
@@ -75,15 +75,15 @@ public class BlueDepotAutonomous extends CommandOpMode {
 
                 // initial flywheel spinup
                 new InstantCommand(() -> shooter.setRequestedVelocity(getShooterVelocityFromDistance())),
-                new WaitCommand(3000),
+                new WaitCommand(4500),
 
                 // fire 1
                 shooter.fireSequence(),
-                new WaitCommand(2000),
+                new WaitCommand(3500),
 
                 // fire 2
                 shooter.fireSequence(),
-                new WaitCommand(2000),
+                new WaitCommand(3500),
 
                 // fire 3
                 shooter.fireSequence(),

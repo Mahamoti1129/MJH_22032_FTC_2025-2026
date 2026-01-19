@@ -88,10 +88,5 @@ public class CommandTeleOp extends CommandOpMode {
         toolOp.getGamepadButton(LEFT_BUMPER)
                 .whileHeld(new InstantCommand(() -> shooter.setLaunchServoPower(-1)))
                 .whenReleased(new InstantCommand(() -> shooter.setLaunchServoPower(0)));
-
-        InterpLUT flywheelDistancePowerLookup = new InterpLUT();
-        flywheelDistancePowerLookup.add(10, 280);
-        flywheelDistancePowerLookup.add(100, 2800);
-        flywheelDistancePowerLookup.createLUT();
     }
 }

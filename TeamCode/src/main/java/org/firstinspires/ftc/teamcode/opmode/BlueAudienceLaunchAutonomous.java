@@ -30,8 +30,8 @@ public class BlueAudienceLaunchAutonomous extends CommandOpMode {
 
     private final Pose
             startingPose = new Pose(47.750, 8.239, Math.toRadians(90)),
-            shootingPose = new Pose(62.169, 13.295, Math.toRadians(120)),
-            parkPose = new Pose(48.312, 47.938, Math.toRadians(90));
+            shootingPose = new Pose(54.169, 19.295, Math.toRadians(121)),
+            parkPose = new Pose(48.312, 36, Math.toRadians(90));
 
     private PathChain startToShootingPosition, shootingPositionToPark;
 
@@ -75,15 +75,15 @@ public class BlueAudienceLaunchAutonomous extends CommandOpMode {
 
                 // initial flywheel spinup
                 new InstantCommand(() -> shooter.setRequestedVelocity(getShooterVelocityFromDistance())),
-                new WaitCommand(3000),
+                new WaitCommand(4500),
 
                 // fire 1
                 shooter.fireSequence(),
-                new WaitCommand(2000),
+                new WaitCommand(5000),
 
                 // fire 2
                 shooter.fireSequence(),
-                new WaitCommand(2000),
+                new WaitCommand(5500),
 
                 // fire 3
                 shooter.fireSequence(),
@@ -99,6 +99,6 @@ public class BlueAudienceLaunchAutonomous extends CommandOpMode {
 
     private double getShooterVelocityFromDistance() {
         //TODO: use camera to detect distance to QR code, use interpolated lookup table to calculate velocity
-        return 2800;
+        return 18.5*280;
     }
 }
