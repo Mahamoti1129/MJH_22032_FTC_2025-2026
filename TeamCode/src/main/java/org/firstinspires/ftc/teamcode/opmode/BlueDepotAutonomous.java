@@ -52,11 +52,9 @@ public class BlueDepotAutonomous extends CommandOpMode {
         driverOp = new GamepadEx(gamepad1);
         toolOp = new GamepadEx(gamepad2);
 
-        shooter = new Shooter();
-        shooter.init(hardwareMap, telemetry);
+        shooter = new Shooter(hardwareMap, telemetry);
 
-        drivetrain = new Drivetrain();
-        drivetrain.init(hardwareMap, driverOp, true);
+        drivetrain = new Drivetrain(hardwareMap, driverOp, true);
 
         camera = new Camera();
         camera.init(hardwareMap, telemetry);

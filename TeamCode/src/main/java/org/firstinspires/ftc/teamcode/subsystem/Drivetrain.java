@@ -18,7 +18,7 @@ public class Drivetrain extends SubsystemBase {
 
     private boolean autonomous = true;
 
-    public void init(HardwareMap hardwareMap, GamepadEx driverOp, boolean autonomous){
+    public Drivetrain(HardwareMap hardwareMap, GamepadEx driverOp, boolean autonomous){
         this.autonomous = autonomous;
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose());

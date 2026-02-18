@@ -43,25 +43,25 @@ public class CommandTeleOp extends CommandOpMode {
         driverOp = new GamepadEx(gamepad1);
         toolOp = new GamepadEx(gamepad2);
 
-        shooter = new Shooter();
-        shooter.init(hardwareMap, telemetry);
+        shooter = new Shooter(hardwareMap, telemetry);
 
         shooterDistanceSpeedLookupTable.createLUT();
 
-        drivetrain = new Drivetrain();
-        drivetrain.init(hardwareMap, driverOp, false);
+        drivetrain = new Drivetrain(hardwareMap, driverOp, false);
         drivetrain.follower.startTeleopDrive();
 
+/*
         camera = new Camera();
         camera.init(hardwareMap, telemetry);
+*/
 
-        register(shooter, drivetrain, camera);
 
         toolOp.getGamepadButton(A).whenPressed(new InstantCommand(() -> shooter.setRequestedVelocity(1400)));
         toolOp.getGamepadButton(B).whenPressed(new InstantCommand(() -> shooter.setRequestedVelocity(0)));
         toolOp.getGamepadButton(X).whenPressed(new InstantCommand(() -> shooter.setRequestedVelocity(shooter.getRequestedVelocity() + 280)));
         toolOp.getGamepadButton(Y).whenPressed(new InstantCommand(() -> shooter.setRequestedVelocity(shooter.getRequestedVelocity() - 280)));
 
+/*
         toolOp.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
                 .whenPressed(new InstantCommand(() -> {
                     AprilTagDetection red = camera.getAprilTagDetection(redDepotAprilTag);
@@ -77,6 +77,7 @@ public class CommandTeleOp extends CommandOpMode {
                         shooter.setRequestedVelocity(shooterDistanceSpeedLookupTable.get(Math.clamp(blue.ftcPose.range, shooterDistanceMin, shooterDistanceMax)));
                     }
                 }));
+*/
 
         driverOp.getGamepadButton(LEFT_BUMPER)
                 .whileHeld(new InstantCommand(() -> drivetrain.follower.setMaxPower(0.25)))

@@ -18,37 +18,48 @@ public class Shooter extends SubsystemBase {
     private TelemetryManager telemetryManager;
     private Telemetry telemetry;
 
-    public MotorEx flywheelMotor;
+    public MotorEx flywheelLeft;
+    public MotorEx flywheelRight;
     CRServo leftServo;
     CRServo rightServo;
 
     private double requestedVelocity = 0;
 
-    public void init(HardwareMap hardwareMap, Telemetry telemetry) {
+    public Shooter(HardwareMap hardwareMap, Telemetry telemetry) {
         telemetryManager = PanelsTelemetry.INSTANCE.getTelemetry();
         this.telemetry = telemetry;
 
-        flywheelMotor = new MotorEx(hardwareMap, "shooterMotor", Motor.GoBILDA.BARE);
-        flywheelMotor.setRunMode(Motor.RunMode.VelocityControl);
+        flywheelLeft = new MotorEx(hardwareMap, "leftFlywheel", Motor.GoBILDA.BARE);
+        flywheelLeft.setRunMode(Motor.RunMode.VelocityControl);
+
+        flywheelRight = new MotorEx(hardwareMap, "rightFlywheel", Motor.GoBILDA.BARE);
+        flywheelRight.setRunMode(Motor.RunMode.VelocityControl);
+        flywheelRight.setInverted(true);
+
+/*
         flywheelMotor.setVeloCoefficients(
                 ShooterConstants.kP,
                 ShooterConstants.kI,
                 ShooterConstants.kD
         );
-
+*/
         leftServo = hardwareMap.get(CRServo.class, "leftShooterServo");
-        rightServo = hardwareMap.get(CRServo.class, "rightShooterServo");
+        rightServo = hardwareMap.get(CRServo.class, "rightShooter");
         leftServo.setDirection(DcMotorSimple.Direction.REVERSE);
         this.setLaunchServoPower(0);
     }
 
     public void setFlywheelVelocity(double v){
-        flywheelMotor.setVelocity(v);
+        flywheelLeft.setVelocity(v);
+        flywheelRight.setVelocity(v);
     }
-    public double getFlywheelVelocity(){ return flywheelMotor.getVelocity(); }
-    public double getFlywheelCorrectedVelocity(){ return flywheelMotor.getCorrectedVelocity(); }
+    public double getFlywheelVelocity(){ return flywheelLeft.getVelocity(); }
+    public double getFlywheelCorrectedVelocity(){ return flywheelLeft.getCorrectedVelocity(); }
 
-    public void stopFlywheel(){ flywheelMotor.stopMotor(); }
+    public void stopFlywheel(){
+        flywheelLeft.stopMotor();
+        flywheelRight.stopMotor();
+    }
 
     public void setLaunchServoPower(double power){
         leftServo.setPower(power);
@@ -60,16 +71,16 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setRequestedVelocity(double requestedVelocity) {
-        this.requestedVelocity = Math.clamp(requestedVelocity, 0, flywheelMotor.ACHIEVABLE_MAX_TICKS_PER_SECOND);
+        this.requestedVelocity = Math.clamp(requestedVelocity, 0, flywheelLeft.ACHIEVABLE_MAX_TICKS_PER_SECOND);
     }
 
     @Override
     public void periodic() {
-        flywheelMotor.setVelocity(requestedVelocity);
+        flywheelLeft.setVelocity(requestedVelocity);
 
-        telemetryManager.addData("flywheelCorrectedVelocity", flywheelMotor.getCorrectedVelocity());
+        telemetryManager.addData("flywheelCorrectedVelocity", flywheelLeft.getCorrectedVelocity());
         telemetryManager.addData("requestedVelocity", requestedVelocity);
-        telemetryManager.addData("flywheelAtRequestedVelocity", Math.abs(requestedVelocity - flywheelMotor.getCorrectedVelocity()) < 28);
+        telemetryManager.addData("flywheelAtRequestedVelocity", Math.abs(requestedVelocity - flywheelLeft.getCorrectedVelocity()) < 28);
         telemetryManager.update(telemetry);
     }
 
