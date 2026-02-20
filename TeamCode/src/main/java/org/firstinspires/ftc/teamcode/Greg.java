@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.subsystem.TopFeed;
 import org.firstinspires.ftc.teamcode.subsystem.Transfer;
 
 public class Greg extends Robot {
-    public final Drivetrain drivetrain;
+//    public final Drivetrain drivetrain;
 //    public final Shooter shooter;
     public final Intake intake;
     public final Transfer transfer;
@@ -28,13 +28,13 @@ public class Greg extends Robot {
 
     public Greg(HardwareMap hardwareMap, GamepadEx driveOp, GamepadEx toolOp, Telemetry telemetry, boolean autonomous) {
         telemetryManager = PanelsTelemetry.INSTANCE.getTelemetry();
-        drivetrain = new Drivetrain(hardwareMap, driveOp, autonomous);
+//        drivetrain = new Drivetrain(hardwareMap, driveOp, autonomous);
 //        this.shooter = new Shooter(hardwareMap, telemetry);
         intake = new Intake(hardwareMap);
         transfer = new Transfer(hardwareMap, toolOp, telemetry);
         topFeed = new TopFeed(hardwareMap, toolOp, telemetry);
 
-        register(drivetrain, intake, topFeed, transfer);
+        register(intake, topFeed, transfer);
     }
 
     public SequentialCommandGroup intakeMode(){
@@ -63,10 +63,10 @@ public class Greg extends Robot {
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
                         new InstantCommand(transfer::shoot),
-                        new InstantCommand(topFeed::close),
-                        new InstantCommand(intake::off)
+                        new InstantCommand(topFeed::close)
                 ),
-                new WaitCommand(250)
+                new WaitCommand(250),
+                new InstantCommand(intake::reverse)
         );
     }
 }

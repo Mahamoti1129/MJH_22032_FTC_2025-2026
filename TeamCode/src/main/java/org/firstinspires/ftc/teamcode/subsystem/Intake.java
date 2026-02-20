@@ -10,6 +10,7 @@ public class Intake extends SubsystemBase {
 
     private final double ON = 1.0;
     private final double OFF = 0.0;
+    private final double REVERSE = -0.5;
 
     public Intake(HardwareMap hardwareMap) {
         this.intakeMotor = new Motor(hardwareMap, "intake", Motor.GoBILDA.RPM_312);
@@ -28,4 +29,6 @@ public class Intake extends SubsystemBase {
     public void off(){
         intakeMotor.set(OFF);
     }
+
+    public void reverse(){ intakeMotor.set(REVERSE); }
 }

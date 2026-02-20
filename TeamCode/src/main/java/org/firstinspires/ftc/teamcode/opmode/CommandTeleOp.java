@@ -37,12 +37,12 @@ public class CommandTeleOp extends CommandOpMode {
         toolOp = new GamepadEx(gamepad2);
 
         greg = new Greg(hardwareMap, driverOp, toolOp, telemetry, false);
-        greg.drivetrain.follower.startTeleopDrive();
 
-        // engage drivetrain slow mode
-        driverOp.getGamepadButton(LEFT_BUMPER)
-                .whileHeld(new InstantCommand(() -> greg.drivetrain.follower.setMaxPower(0.25)))
-                .whenReleased(new InstantCommand(() -> greg.drivetrain.follower.setMaxPower(1)));
+//        greg.drivetrain.follower.startTeleopDrive();
+//        // engage drivetrain slow mode
+//        driverOp.getGamepadButton(LEFT_BUMPER)
+//                .whileHeld(new InstantCommand(() -> greg.drivetrain.follower.setMaxPower(0.25)))
+//                .whenReleased(new InstantCommand(() -> greg.drivetrain.follower.setMaxPower(1)));
 
         // enter intake mode
         toolOp.getGamepadButton(DPAD_LEFT).whenPressed(greg.intakeMode());

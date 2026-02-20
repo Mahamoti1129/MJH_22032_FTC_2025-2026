@@ -17,15 +17,15 @@ public class Transfer extends SubsystemBase {
     private final double OPEN = 0.3;
     private final double CLOSED = 0.65;
 
-    private final double FEED = 0.56;
-    private final double INTAKE = 0.4;
+    private final double FEED = 0.65;
+    private final double INTAKE = 0.1;
 
     public Transfer(HardwareMap hardwareMap, GamepadEx toolOp, Telemetry telemetry){
         this.transferServo = new ServoEx(hardwareMap, "transferServo");
         this.gateServo = new ServoEx(hardwareMap, "gateServo");
         this.toolOp = toolOp;
         this.telemetry = telemetry;
-        intake();
+//        intake();
     }
 
     public void shoot(){
