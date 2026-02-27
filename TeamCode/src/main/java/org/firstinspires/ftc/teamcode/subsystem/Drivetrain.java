@@ -29,7 +29,6 @@ public class Drivetrain extends SubsystemBase {
 
     public void drive(double x, double y, double z){
         follower.setTeleOpDrive(x, y, z, robotCentric);
-        follower.update();
     }
 
     @Override
@@ -40,8 +39,7 @@ public class Drivetrain extends SubsystemBase {
                     -driverOp.getLeftX(),
                     -driverOp.getRightX()
             );
-        }else {
-            follower.update();
         }
+        follower.update();
     }
 }

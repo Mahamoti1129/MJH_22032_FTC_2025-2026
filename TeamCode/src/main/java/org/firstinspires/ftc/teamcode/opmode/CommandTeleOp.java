@@ -38,11 +38,11 @@ public class CommandTeleOp extends CommandOpMode {
 
         greg = new Greg(hardwareMap, driverOp, toolOp, telemetry, false);
 
-//        greg.drivetrain.follower.startTeleopDrive();
-//        // engage drivetrain slow mode
-//        driverOp.getGamepadButton(LEFT_BUMPER)
-//                .whileHeld(new InstantCommand(() -> greg.drivetrain.follower.setMaxPower(0.25)))
-//                .whenReleased(new InstantCommand(() -> greg.drivetrain.follower.setMaxPower(1)));
+        greg.drivetrain.follower.startTeleopDrive();
+        // engage drivetrain slow mode
+        driverOp.getGamepadButton(LEFT_BUMPER)
+                .whileHeld(new InstantCommand(() -> greg.drivetrain.follower.setMaxPower(0.25)))
+                .whenReleased(new InstantCommand(() -> greg.drivetrain.follower.setMaxPower(1)));
 
         // enter intake mode
         toolOp.getGamepadButton(DPAD_LEFT).whenPressed(greg.intakeMode());
@@ -51,18 +51,13 @@ public class CommandTeleOp extends CommandOpMode {
         // enter shooting mode
         toolOp.getGamepadButton(DPAD_DOWN).whenPressed(greg.shootMode());
 
-/*
-        toolOp.getGamepadButton(A).whenPressed(new InstantCommand(() -> greg.shooter.setRequestedVelocity(1400)));
-        toolOp.getGamepadButton(B).whenPressed(new InstantCommand(() -> greg.shooter.setRequestedVelocity(0)));
-        toolOp.getGamepadButton(X).whenPressed(new InstantCommand(() -> greg.shooter.setRequestedVelocity(shooter.getRequestedVelocity() + 280)));
-        toolOp.getGamepadButton(Y).whenPressed(new InstantCommand(() -> greg.shooter.setRequestedVelocity(shooter.getRequestedVelocity() - 280)));
+
+        toolOp.getGamepadButton(A).whenPressed(new InstantCommand(() -> greg.shooter.setRequestedVelocity(Shooter.STARTUP)));
+        toolOp.getGamepadButton(B).whenPressed(new InstantCommand(() -> greg.shooter.stopFlywheel()));
+        toolOp.getGamepadButton(X).whenPressed(new InstantCommand(() -> greg.shooter.setRequestedVelocity(greg.shooter.getRequestedVelocity() + Shooter.STEP)));
+        toolOp.getGamepadButton(Y).whenPressed(new InstantCommand(() -> greg.shooter.setRequestedVelocity(greg.shooter.getRequestedVelocity() - Shooter.STEP)));
 
         toolOp.getGamepadButton(RIGHT_BUMPER)
-                .whenPressed(shooter.fireSequence());
-
-        toolOp.getGamepadButton(LEFT_BUMPER)
-                .whileHeld(new InstantCommand(() -> shooter.setLaunchServoPower(-1)))
-                .whenReleased(new InstantCommand(() -> shooter.setLaunchServoPower(0)));
-*/
+                .whenPressed(greg.shooter.fireSequence());
     }
 }

@@ -15,6 +15,11 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Shooter extends SubsystemBase {
+    public static double STARTUP = 1200;
+    public static double STEP = 100;
+    public static double OFF = 0;
+
+    public static long SHOOT_FEED_DELAY = 640;
     private TelemetryManager telemetryManager;
     private Telemetry telemetry;
 
@@ -66,6 +71,14 @@ public class Shooter extends SubsystemBase {
         rightServo.setPower(power);
     }
 
+    public void runLaunchServo(){
+        setLaunchServoPower(1);
+    }
+
+    public void stopLaunchServo(){
+        setLaunchServoPower(0);
+    }
+
     public double getRequestedVelocity() {
         return requestedVelocity;
     }
@@ -80,14 +93,14 @@ public class Shooter extends SubsystemBase {
 
         telemetryManager.addData("flywheelCorrectedVelocity", flywheelLeft.getCorrectedVelocity());
         telemetryManager.addData("requestedVelocity", requestedVelocity);
-        telemetryManager.addData("flywheelAtRequestedVelocity", Math.abs(requestedVelocity - flywheelLeft.getCorrectedVelocity()) < 28);
+        telemetryManager.addData("flywheelAtRequestedVelocity", Math.abs(requestedVelocity - flywheelLeft.getCorrectedVelocity()) < 30);
         telemetryManager.update(telemetry);
     }
 
     public SequentialCommandGroup fireSequence(){
         return new SequentialCommandGroup(
                 new InstantCommand(() -> this.setLaunchServoPower(1)),
-                new WaitCommand(640),
+                new WaitCommand(SHOOT_FEED_DELAY),
                 new InstantCommand(() -> this.setLaunchServoPower(0))
         );
     }

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Transfer extends SubsystemBase {
 
     private final ServoEx transferServo;
-    private final ServoEx gateServo;
+//    private final ServoEx gateServo;
     private final GamepadEx toolOp;
     private final Telemetry telemetry;
 
@@ -22,19 +22,18 @@ public class Transfer extends SubsystemBase {
 
     public Transfer(HardwareMap hardwareMap, GamepadEx toolOp, Telemetry telemetry){
         this.transferServo = new ServoEx(hardwareMap, "transferServo");
-        this.gateServo = new ServoEx(hardwareMap, "gateServo");
+//        this.gateServo = new ServoEx(hardwareMap, "gateServo");
         this.toolOp = toolOp;
         this.telemetry = telemetry;
-//        intake();
     }
 
     public void shoot(){
-        gateServo.set(OPEN);
+//        gateServo.set(OPEN);
         transferServo.set(FEED);
     }
 
     public void intake(){
-        gateServo.set(CLOSED);
+//        gateServo.set(CLOSED);
         transferServo.set(INTAKE);
     }
 }

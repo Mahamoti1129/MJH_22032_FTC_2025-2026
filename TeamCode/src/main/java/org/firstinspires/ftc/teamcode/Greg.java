@@ -18,23 +18,26 @@ import org.firstinspires.ftc.teamcode.subsystem.TopFeed;
 import org.firstinspires.ftc.teamcode.subsystem.Transfer;
 
 public class Greg extends Robot {
-//    public final Drivetrain drivetrain;
-//    public final Shooter shooter;
+    public final Drivetrain drivetrain;
+    public final Shooter shooter;
     public final Intake intake;
     public final Transfer transfer;
     public final TopFeed topFeed;
+
+    public static final long SHOOT_DELAY = 640;
+    public static final long MODE_SWITCH_DELAY = 250;
 
     public final TelemetryManager telemetryManager;
 
     public Greg(HardwareMap hardwareMap, GamepadEx driveOp, GamepadEx toolOp, Telemetry telemetry, boolean autonomous) {
         telemetryManager = PanelsTelemetry.INSTANCE.getTelemetry();
-//        drivetrain = new Drivetrain(hardwareMap, driveOp, autonomous);
-//        this.shooter = new Shooter(hardwareMap, telemetry);
+        drivetrain = new Drivetrain(hardwareMap, driveOp, autonomous);
+        shooter = new Shooter(hardwareMap, telemetry);
         intake = new Intake(hardwareMap);
         transfer = new Transfer(hardwareMap, toolOp, telemetry);
         topFeed = new TopFeed(hardwareMap, toolOp, telemetry);
 
-        register(intake, topFeed, transfer);
+        register(drivetrain, shooter, intake, topFeed, transfer);
     }
 
     public SequentialCommandGroup intakeMode(){
@@ -43,7 +46,7 @@ public class Greg extends Robot {
                         new InstantCommand(transfer::intake),
                         new InstantCommand(topFeed::close)
                 ),
-                new WaitCommand(250),
+                new WaitCommand(MODE_SWITCH_DELAY),
                 new InstantCommand(intake::on)
         );
     }
@@ -55,7 +58,7 @@ public class Greg extends Robot {
                         new InstantCommand(topFeed::open),
                         new InstantCommand(intake::off)
                 ),
-                new WaitCommand(250)
+                new WaitCommand(MODE_SWITCH_DELAY)
         );
     }
 
@@ -63,10 +66,24 @@ public class Greg extends Robot {
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
                         new InstantCommand(transfer::shoot),
-                        new InstantCommand(topFeed::close)
+                        new InstantCommand(topFeed::close),
+                        new InstantCommand(intake::off)
                 ),
-                new WaitCommand(250),
-                new InstantCommand(intake::reverse)
+                new WaitCommand(MODE_SWITCH_DELAY)
         );
     }
+
+    public SequentialCommandGroup fireSequence(){
+        return new SequentialCommandGroup(
+                this.shootMode(),
+                new InstantCommand(intake::reverse),
+                new InstantCommand(shooter::runLaunchServo),
+                new WaitCommand(SHOOT_DELAY),
+                new ParallelCommandGroup(
+                        new InstantCommand(intake::off),
+                        new InstantCommand(shooter::stopLaunchServo)
+                )
+        );
+    }
+
 }
