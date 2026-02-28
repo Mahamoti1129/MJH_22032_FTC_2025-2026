@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.seattlesolvers.solverslib.command.ConditionalCommand;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.Robot;
@@ -17,12 +18,17 @@ import org.firstinspires.ftc.teamcode.subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.subsystem.TopFeed;
 import org.firstinspires.ftc.teamcode.subsystem.Transfer;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
 public class Greg extends Robot {
     public final Drivetrain drivetrain;
     public final Shooter shooter;
     public final Intake intake;
     public final Transfer transfer;
     public final TopFeed topFeed;
+
+    public boolean shooterMode = false;
 
     public static final long SHOOT_DELAY = 640;
     public static final long MODE_SWITCH_DELAY = 250;
@@ -75,9 +81,15 @@ public class Greg extends Robot {
 
     public SequentialCommandGroup fireSequence(){
         return new SequentialCommandGroup(
-                this.shootMode(),
-                new InstantCommand(intake::reverse),
-                new InstantCommand(shooter::runLaunchServo),
+                new ConditionalCommand(
+                        new InstantCommand(),
+                        new InstantCommand(this::shootMode),
+                        () -> shooterMode
+                ),
+                new ParallelCommandGroup(
+                        new InstantCommand(intake::reverse),
+                        new InstantCommand(shooter::runLaunchServo)
+                ),
                 new WaitCommand(SHOOT_DELAY),
                 new ParallelCommandGroup(
                         new InstantCommand(intake::off),

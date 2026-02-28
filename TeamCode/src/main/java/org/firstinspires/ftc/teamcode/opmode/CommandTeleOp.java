@@ -51,13 +51,14 @@ public class CommandTeleOp extends CommandOpMode {
         // enter shooting mode
         toolOp.getGamepadButton(DPAD_DOWN).whenPressed(greg.shootMode());
 
-
         toolOp.getGamepadButton(A).whenPressed(new InstantCommand(() -> greg.shooter.setRequestedVelocity(Shooter.STARTUP)));
-        toolOp.getGamepadButton(B).whenPressed(new InstantCommand(() -> greg.shooter.stopFlywheel()));
+        toolOp.getGamepadButton(B).whenPressed(new InstantCommand(() -> greg.shooter.setRequestedVelocity(Shooter.OFF)));
         toolOp.getGamepadButton(X).whenPressed(new InstantCommand(() -> greg.shooter.setRequestedVelocity(greg.shooter.getRequestedVelocity() + Shooter.STEP)));
         toolOp.getGamepadButton(Y).whenPressed(new InstantCommand(() -> greg.shooter.setRequestedVelocity(greg.shooter.getRequestedVelocity() - Shooter.STEP)));
 
-        toolOp.getGamepadButton(RIGHT_BUMPER)
-                .whenPressed(greg.shooter.fireSequence());
+        toolOp.getGamepadButton(RIGHT_BUMPER).whenPressed(greg.fireSequence());
+        toolOp.getGamepadButton(LEFT_BUMPER)
+                .whileHeld(new InstantCommand(() -> greg.intake.reverse()))
+                .whenReleased(new InstantCommand(() -> greg.intake.off()));
     }
 }

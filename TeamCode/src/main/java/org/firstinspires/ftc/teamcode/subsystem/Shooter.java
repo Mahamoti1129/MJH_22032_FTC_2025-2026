@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Shooter extends SubsystemBase {
     public static double STARTUP = 1200;
-    public static double STEP = 100;
+    public static double STEP = 50;
     public static double OFF = 0;
 
     public static long SHOOT_FEED_DELAY = 640;

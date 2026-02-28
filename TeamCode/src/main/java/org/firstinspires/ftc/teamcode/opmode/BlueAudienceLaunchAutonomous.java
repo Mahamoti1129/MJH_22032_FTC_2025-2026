@@ -13,6 +13,7 @@ import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
+import org.firstinspires.ftc.teamcode.Greg;
 import org.firstinspires.ftc.teamcode.subsystem.Camera;
 import org.firstinspires.ftc.teamcode.subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystem.Shooter;
@@ -20,10 +21,10 @@ import org.firstinspires.ftc.teamcode.subsystem.Shooter;
 @Autonomous(name="Blue Audience Launch", group="Autonomous")
 public class BlueAudienceLaunchAutonomous extends CommandOpMode {
     private TelemetryManager telemetryManager;
-    private Shooter shooter;
-    private Drivetrain drivetrain;
-    private Camera camera;
 
+    private Greg greg;
+
+    private static double FLYWHEEL_SPEED = 1450;
     private GamepadEx driverOp, toolOp;
 
     private final Pose
@@ -34,12 +35,12 @@ public class BlueAudienceLaunchAutonomous extends CommandOpMode {
     private PathChain startToShootingPosition, shootingPositionToPark;
 
     public void buildPaths(){
-        startToShootingPosition = drivetrain.follower.pathBuilder()
+        startToShootingPosition = greg.drivetrain.follower.pathBuilder()
                 .addPath(new BezierLine(startingPose, shootingPose))
                 .setLinearHeadingInterpolation(startingPose.getHeading(), shootingPose.getHeading())
                 .build();
 
-        shootingPositionToPark = drivetrain.follower.pathBuilder()
+        shootingPositionToPark = greg.drivetrain.follower.pathBuilder()
                 .addPath(new BezierLine(shootingPose, parkPose))
                 .setLinearHeadingInterpolation(shootingPose.getHeading(), parkPose.getHeading())
                 .build();
@@ -52,49 +53,38 @@ public class BlueAudienceLaunchAutonomous extends CommandOpMode {
         driverOp = new GamepadEx(gamepad1);
         toolOp = new GamepadEx(gamepad2);
 
-        shooter = new Shooter(hardwareMap, telemetry);
-
-        drivetrain = new Drivetrain(hardwareMap, driverOp, true);
-
-        camera = new Camera();
-        camera.init(hardwareMap, telemetry);
-
-        register(shooter, drivetrain, camera);
+        greg = new Greg(hardwareMap, driverOp, toolOp, telemetry, true);
 
         buildPaths();
-        drivetrain.follower.setStartingPose(startingPose);
-        drivetrain.follower.setMaxPower(0.5);
+        greg.drivetrain.follower.setStartingPose(startingPose);
+        greg.drivetrain.follower.setMaxPower(0.5);
 
         SequentialCommandGroup autonomousSequence = new SequentialCommandGroup(
                 // shooting position
-                new FollowPathCommand(drivetrain.follower, startToShootingPosition),
+                new FollowPathCommand(greg.drivetrain.follower, startToShootingPosition),
 
                 // initial flywheel spinup
-                new InstantCommand(() -> shooter.setRequestedVelocity(getShooterVelocityFromDistance())),
-                new WaitCommand(4500),
+                new InstantCommand(() -> greg.shooter.setRequestedVelocity(FLYWHEEL_SPEED)),
+                new WaitCommand(3500),
 
                 // fire 1
-                shooter.fireSequence(),
-                new WaitCommand(5000),
+                greg.fireSequence(),
+                new WaitCommand(2500),
 
                 // fire 2
-                shooter.fireSequence(),
-                new WaitCommand(5500),
+                greg.fireSequence(),
+                new WaitCommand(2500),
 
                 // fire 3
-                shooter.fireSequence(),
+                greg.fireSequence(),
 
                 // shut down flywheel
-                new InstantCommand(() -> shooter.setRequestedVelocity(0)),
+                new InstantCommand(() -> greg.shooter.setRequestedVelocity(0)),
                 // park
-                new FollowPathCommand(drivetrain.follower, shootingPositionToPark)
+                new FollowPathCommand(greg.drivetrain.follower, shootingPositionToPark)
         );
 
         schedule(autonomousSequence);
     }
 
-    private double getShooterVelocityFromDistance() {
-        //TODO: use camera to detect distance to QR code, use interpolated lookup table to calculate velocity
-        return 18.5*280;
-    }
 }

@@ -22,7 +22,6 @@ public class Drivetrain extends SubsystemBase {
         this.autonomous = autonomous;
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose());
-        follower.update();
 
         this.driverOp = driverOp;
     }

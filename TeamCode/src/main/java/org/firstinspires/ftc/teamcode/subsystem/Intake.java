@@ -14,7 +14,6 @@ public class Intake extends SubsystemBase {
 
     public Intake(HardwareMap hardwareMap) {
         this.intakeMotor = new Motor(hardwareMap, "intake", Motor.GoBILDA.RPM_312);
-        intakeMotor.setInverted(true);
         off();
     };
 
